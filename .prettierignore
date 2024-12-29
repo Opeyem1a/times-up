@@ -1,0 +1,7 @@
+/.next
+/node_modules
+.prettierrc
+.prettierignore
+eslint.config.mjs
+postcss.config.mjs
+yarn.lock
