@@ -62,7 +62,11 @@ const HomeWithValidData = ({ config }: ExpectedSearchParams) => {
     }, [config, totalSecondsRemaining]);
 
     if (currentSlide === null) {
-        return <div>COMPLETE</div>;
+        return (
+            <div className="p-6 bg-yellow-200 text-yellow-900 rounded-lg items-center justify-center">
+                <p className="text-lg">All done!</p>
+            </div>
+        );
     }
 
     return (
@@ -100,18 +104,18 @@ const Countdown = ({
 
     return (
         <div className="flex flex-col gap-4">
-            <div className="p-6 bg-foreground text-background rounded-lg items-center justify-center">
+            <div className="p-6 bg-foreground text-background rounded-lg flex flex-col gap-1 justify-center">
                 <p className="text-sm text-gray-500">Current slide:</p>
                 <p className="text-3xl">{currSlideName}</p>
             </div>
             <div className="flex gap-4">
-                <div className="p-6 bg-green-300 text-green-900 rounded-lg flex-[4] flex flex-col justify-center">
+                <div className="p-6 bg-green-300 text-green-900 rounded-lg flex-[4] flex flex-col gap-1 justify-center">
                     <span className="text-sm">Time to next slide</span>
                     <p className="text-5xl">
                         {prettyFormatSeconds(currSlideSecondsRemaining)}
                     </p>
                 </div>
-                <div className="p-6 bg-blue-300 text-blue-900 rounded-lg flex-[1] flex flex-col justify-center">
+                <div className="p-6 bg-blue-300 text-blue-900 rounded-lg flex-[1] flex flex-col gap-1 justify-center">
                     <span className="text-sm">Total time remaining</span>
                     <p className="text-xl">
                         {prettyFormatSeconds(currSecondsRemaining)}
