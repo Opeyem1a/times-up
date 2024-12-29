@@ -13,17 +13,16 @@ export default function Home() {
     const { config, warningTimeoutSeconds } = result;
 
     return (
-        <HomeWithValidData
-            config={config}
-            warningTimeoutSeconds={warningTimeoutSeconds}
-        />
+        <main className="max-w-2xl mx-auto min-h-screen my-24 p-4">
+            <HomeWithValidData
+                config={config}
+                warningTimeoutSeconds={warningTimeoutSeconds}
+            />
+        </main>
     );
 }
 
-const HomeWithValidData = ({
-    config,
-    warningTimeoutSeconds,
-}: ExpectedSearchParams) => {
+const HomeWithValidData = ({ config }: ExpectedSearchParams) => {
     const totalDuration = config.reduce(
         (acc, curr) => acc + curr.durationInSeconds,
         0
@@ -44,7 +43,7 @@ const HomeWithValidData = ({
         }
 
         return null;
-    }, [config, totalSecondsRemaining]);
+    }, [config, totalDuration, totalSecondsRemaining]);
 
     const secondsToNextSlide = useMemo(() => {
         const reversedConfig = [...config].reverse();
@@ -97,19 +96,28 @@ const Countdown = ({
         return () => {
             clearInterval(interval);
         };
-    }, []);
+    }, [setTotalSecondsRemaining]);
 
     return (
-        <div className="max-w-[]">
-            <h4>{currSlideName}</h4>
-            <p>
-                Time to next slide:{' '}
-                {prettyFormatSeconds(currSlideSecondsRemaining)}
-            </p>
-            <p>
-                Total time remaining:{' '}
-                {prettyFormatSeconds(currSecondsRemaining)}
-            </p>
+        <div className="flex flex-col gap-4">
+            <div className="p-6 bg-foreground text-background rounded-lg items-center justify-center">
+                <p className="text-sm text-gray-500">Current slide:</p>
+                <p className="text-3xl">{currSlideName}</p>
+            </div>
+            <div className="flex gap-4">
+                <div className="p-6 bg-green-300 text-green-900 rounded-lg flex-[4] flex flex-col justify-center">
+                    <span className="text-sm">Time to next slide</span>
+                    <p className="text-5xl">
+                        {prettyFormatSeconds(currSlideSecondsRemaining)}
+                    </p>
+                </div>
+                <div className="p-6 bg-blue-300 text-blue-900 rounded-lg flex-[1] flex flex-col justify-center">
+                    <span className="text-sm">Total time remaining</span>
+                    <p className="text-xl">
+                        {prettyFormatSeconds(currSecondsRemaining)}
+                    </p>
+                </div>
+            </div>
         </div>
     );
 };
