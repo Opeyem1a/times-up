@@ -7,12 +7,10 @@ import {
 } from '@/app/hooks/useSlideDataFromSearchParams';
 
 export default function Home() {
-    const { config, warningTimeoutSeconds } = useSlideDataFromSearchParams();
+    const result = useSlideDataFromSearchParams();
+    if (result === null) return null;
 
-    // todo: validate warning timeout as well
-    if (config === null) return null;
-
-    console.log({ config });
+    const { config, warningTimeoutSeconds } = result;
 
     return (
         <HomeWithValidData
@@ -102,7 +100,7 @@ const Countdown = ({
     }, []);
 
     return (
-        <div>
+        <div className="max-w-[]">
             <h4>{currSlideName}</h4>
             <p>
                 Time to next slide:{' '}
