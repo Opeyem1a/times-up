@@ -22,10 +22,7 @@ export default function Home() {
     );
 }
 
-const HomeWithValidData = ({
-    config,
-    warningTimeoutSeconds,
-}: ExpectedSearchParams) => {
+const HomeWithValidData = ({ config }: ExpectedSearchParams) => {
     const totalDuration = config.reduce(
         (acc, curr) => acc + curr.durationInSeconds,
         0
@@ -46,7 +43,7 @@ const HomeWithValidData = ({
         }
 
         return null;
-    }, [config, totalSecondsRemaining]);
+    }, [config, totalDuration, totalSecondsRemaining]);
 
     const secondsToNextSlide = useMemo(() => {
         const reversedConfig = [...config].reverse();
@@ -99,7 +96,7 @@ const Countdown = ({
         return () => {
             clearInterval(interval);
         };
-    }, []);
+    }, [setTotalSecondsRemaining]);
 
     return (
         <div className="flex flex-col gap-4">
