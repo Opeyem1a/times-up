@@ -31,7 +31,10 @@ export default function Home() {
     );
 }
 
-const HomeWithValidData = ({ config }: ExpectedSearchParams) => {
+const HomeWithValidData = ({
+    config,
+    warningTimeoutSeconds,
+}: ExpectedSearchParams) => {
     const totalDuration = config.reduce(
         (acc, curr) => acc + curr.durationInSeconds,
         0
@@ -83,6 +86,10 @@ const HomeWithValidData = ({ config }: ExpectedSearchParams) => {
             currSecondsRemaining={totalSecondsRemaining}
             currSlideSecondsRemaining={secondsToNextSlide}
             currSlideName={currentSlide.name}
+            shouldIndicateWarning={
+                Boolean(warningTimeoutSeconds ?? undefined) &&
+                secondsToNextSlide <= warningTimeoutSeconds
+            }
             setTotalSecondsRemaining={setTotalSecondsRemaining}
         />
     );
@@ -92,12 +99,14 @@ type CountdownProps = {
     currSecondsRemaining: number;
     currSlideSecondsRemaining: number;
     currSlideName: string;
+    shouldIndicateWarning: boolean;
     setTotalSecondsRemaining: Dispatch<SetStateAction<number>>;
 };
 const Countdown = ({
     currSecondsRemaining,
     currSlideSecondsRemaining,
     currSlideName,
+    shouldIndicateWarning,
     setTotalSecondsRemaining,
 }: CountdownProps) => {
     useEffect(() => {
@@ -113,12 +122,16 @@ const Countdown = ({
 
     return (
         <div className="flex flex-col gap-4">
-            <div className="p-6 bg-foreground text-background rounded-lg flex flex-col gap-1 justify-center">
+            <div
+                className={`p-6 bg-foreground text-background rounded-lg flex flex-col gap-1 justify-center`}
+            >
                 <p className="text-sm text-gray-500">Current slide:</p>
                 <p className="text-3xl">{currSlideName}</p>
             </div>
             <div className="flex gap-4">
-                <div className="p-6 bg-green-300 text-green-900 rounded-lg flex-[4] flex flex-col gap-1 justify-center">
+                <div
+                    className={`${shouldIndicateWarning && 'motion-safe:animate-pulse bg-orange-200'} p-6 bg-green-300 text-green-900 rounded-lg flex-[4] flex flex-col gap-1 justify-center transition-colors`}
+                >
                     <span className="text-sm">Time to next slide</span>
                     <p className="text-5xl">
                         {prettyFormatSeconds(currSlideSecondsRemaining)}
