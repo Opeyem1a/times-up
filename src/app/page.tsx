@@ -95,13 +95,13 @@ const HomeWithValidData = ({
     );
 };
 
-type CountdownProps = {
+interface CountdownProps {
     currSecondsRemaining: number;
     currSlideSecondsRemaining: number;
     currSlideName: string;
     shouldIndicateWarning: boolean;
     setTotalSecondsRemaining: Dispatch<SetStateAction<number>>;
-};
+}
 const Countdown = ({
     currSecondsRemaining,
     currSlideSecondsRemaining,
@@ -130,7 +130,7 @@ const Countdown = ({
             </div>
             <div className="flex gap-4">
                 <div
-                    className={`${shouldIndicateWarning && 'motion-safe:animate-pulse bg-orange-200'} p-6 bg-green-300 text-green-900 rounded-lg flex-[4] flex flex-col gap-1 justify-center transition-colors`}
+                    className={`${shouldIndicateWarning ? 'motion-safe:animate-pulse bg-orange-400 text-orange-900' : 'bg-green-300 text-green-900'} p-6 rounded-lg flex-[4] flex flex-col gap-1 justify-center transition-colors`}
                 >
                     <span className="text-sm">Time to next slide</span>
                     <p className="text-5xl">
