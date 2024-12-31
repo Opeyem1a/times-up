@@ -2,16 +2,16 @@ import { useSearchParams } from 'next/navigation';
 
 const SECONDS_IN_HOUR = 60 * 60;
 
-export const useSlideDataFromSearchParams = (): SafeParseResult<
+export const useSectionDataFromSearchParams = (): SafeParseResult<
     ExpectedSearchParams,
     string[]
 > => {
     const searchParams = useSearchParams();
-    const rawSlideConfigString = searchParams.get('config');
+    const rawSectionConfigString = searchParams.get('config');
     const rawWarningTimeoutString = searchParams.get('warning');
 
     return safeParseParams({
-        rawConfig: rawSlideConfigString,
+        rawConfig: rawSectionConfigString,
         rawWarningTimeout: rawWarningTimeoutString,
     });
 };
@@ -117,8 +117,8 @@ const safeParseParams = ({
     }
 
     /**
-     * Note that the warning timeout can exceed the duration of an individual slide.
-     * This would mean the slide would show up already having a warning indication.
+     * Note that the warning timeout can exceed the duration of an individual section.
+     * This would mean the section would show up already having a warning indication.
      */
     if (parsedWarningTimeout > SECONDS_IN_HOUR) {
         return {
