@@ -8,29 +8,38 @@ import {
 import PauseIcon from '@/../public/pause.svg';
 import PlayIcon from '@/../public/play.svg';
 import ReplayIcon from '@/../public/replay.svg';
+import { useSearchParams } from 'next/navigation';
 
 export default function Home() {
     const result = useSectionDataFromSearchParams();
-    if (!result.success) {
-        // todo: make the error component look nice
-        return (
-            <div>
-                {result.error.map((error, index) => (
-                    <span key={`error-${index}`}>{error}</span>
-                ))}
-            </div>
-        );
-    }
-
-    const { config, warningTimeoutSeconds } = result.data;
+    const searchParams = useSearchParams();
 
     return (
         <main className="max-w-2xl mx-auto min-h-screen p-4">
             <div className="flex flex-col min-h-screen justify-center">
-                <HomeWithValidData
-                    config={config}
-                    warningTimeoutSeconds={warningTimeoutSeconds}
-                />
+                {result.success ? (
+                    <HomeWithValidData
+                        config={result.data.config}
+                        warningTimeoutSeconds={
+                            result.data.warningTimeoutSeconds
+                        }
+                    />
+                ) : (
+                    <div className="flex flex-col gap-4">
+                        <h4 className="text-lg font-semibold">
+                            😬 Uh-oh, we can't interpret this format properly
+                        </h4>
+                        <div className="flex flex-col gap-2 text-orange-700 dark:text-orange-400">
+                            {result.error.map((error, index) => (
+                                <span key={`error-${index}`}>{error}</span>
+                            ))}
+                        </div>
+                        <code className="px-2 py-1 bg-foreground/20 text-foreground text-sm rounded-md break-words inline md:inline-table">
+                            {decodeURIComponent(searchParams.toString())}
+                        </code>
+                    </div>
+                )}
+                <div className="min-h-[1rem]" />
             </div>
         </main>
     );

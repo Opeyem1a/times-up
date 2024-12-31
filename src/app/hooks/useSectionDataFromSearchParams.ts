@@ -50,11 +50,15 @@ const safeParseParams = ({
         };
     }
 
-    const split = rawConfig.split(CONFIG_DELIMITER);
+    const split = rawConfig
+        .split(CONFIG_DELIMITER)
+        .filter((block) => block !== '');
     if (split.length % 2 !== 0) {
         return {
             success: false,
-            error: ['Config does not meet the expected format'],
+            error: [
+                'Config does not meet the expected format (e.g. "Title;100;Second title;200" etc)',
+            ],
         };
     }
 
@@ -82,10 +86,10 @@ const safeParseParams = ({
     const errorsFromConfigs = parsedConfigs.reduce((acc, config) => {
         const errors = [];
         if (isNaN(config.durationInSeconds)) {
-            errors.push('Durations must be a valid number of seconds');
+            errors.push('Section durations must be a valid number of seconds');
         }
         if (config.durationInSeconds > SECONDS_IN_HOUR) {
-            errors.push('Durations cannot exceed 1 hour of time');
+            errors.push('Section durations cannot exceed 1 hour of time');
         }
 
         return [...acc, ...errors];
@@ -112,7 +116,7 @@ const safeParseParams = ({
     if (isNaN(parsedWarningTimeout)) {
         return {
             success: false,
-            error: ['Warning timeout must be a valid number of seconds'],
+            error: ['Warning threshold must be a valid number of seconds'],
         };
     }
 
@@ -124,7 +128,7 @@ const safeParseParams = ({
         return {
             success: false,
             error: [
-                'Warning timeout must be a valid number of seconds that does not exceed 1 hour of time',
+                'Warning threshold must be a valid number of seconds that does not exceed 1 hour of time',
             ],
         };
     }
