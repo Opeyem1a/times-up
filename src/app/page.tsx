@@ -8,9 +8,18 @@ import {
 
 export default function Home() {
     const result = useSlideDataFromSearchParams();
-    if (result === null) return null;
+    if (!result.success) {
+        // todo: make the error component look nice
+        return (
+            <div>
+                {result.error.map((error, index) => (
+                    <span key={`error-${index}`}>{error}</span>
+                ))}
+            </div>
+        );
+    }
 
-    const { config, warningTimeoutSeconds } = result;
+    const { config, warningTimeoutSeconds } = result.data;
 
     return (
         <main className="max-w-2xl mx-auto min-h-screen my-24 p-4">
