@@ -161,7 +161,7 @@ const Countdown = ({
                 </div>
                 <div className="p-6 bg-blue-300 text-blue-900 rounded-lg flex-[1] flex flex-col gap-1 justify-start">
                     <span className="text-sm">Time remaining</span>
-                    <p className="text-2xl">
+                    <p className="text-4xl">
                         {prettyFormatSeconds(currSecondsRemaining)}
                     </p>
                 </div>
