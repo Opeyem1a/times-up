@@ -3,14 +3,14 @@
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 import {
     ExpectedSearchParams,
-    useSlideDataFromSearchParams,
-} from '@/app/hooks/useSlideDataFromSearchParams';
+    useSectionDataFromSearchParams,
+} from '@/app/hooks/useSectionDataFromSearchParams';
 import PauseIcon from '@/../public/pause.svg';
 import PlayIcon from '@/../public/play.svg';
 import ReplayIcon from '@/../public/replay.svg';
 
 export default function Home() {
-    const result = useSlideDataFromSearchParams();
+    const result = useSectionDataFromSearchParams();
     if (!result.success) {
         // todo: make the error component look nice
         return (
@@ -48,7 +48,7 @@ const HomeWithValidData = ({
         useState(totalDuration);
     const [isPaused, setIsPaused] = useState(true);
 
-    const currentSlide = useMemo(() => {
+    const currentSection = useMemo(() => {
         let potentialDurationAccumulated = 0;
         for (const entry of config) {
             potentialDurationAccumulated += entry.durationInSeconds;
@@ -63,7 +63,7 @@ const HomeWithValidData = ({
         return null;
     }, [config, totalDuration, totalSecondsRemaining]);
 
-    const secondsToNextSlide = useMemo(() => {
+    const secondsToNextSection = useMemo(() => {
         const reversedConfig = [...config].reverse();
 
         let counter = 0;
@@ -81,18 +81,18 @@ const HomeWithValidData = ({
 
     return (
         <div className="flex flex-col gap-12">
-            {currentSlide === null ? (
+            {currentSection === null ? (
                 <div className="p-6 bg-yellow-200 text-yellow-900 rounded-lg items-center justify-center">
                     <p className="text-lg">All done!</p>
                 </div>
             ) : (
                 <Countdown
                     currSecondsRemaining={totalSecondsRemaining}
-                    currSlideSecondsRemaining={secondsToNextSlide}
-                    currSlideName={currentSlide.name}
+                    currSectionSecondsRemaining={secondsToNextSection}
+                    currSectionName={currentSection.name}
                     shouldIndicateWarning={
                         Boolean(warningTimeoutSeconds ?? undefined) &&
-                        secondsToNextSlide <= warningTimeoutSeconds
+                        secondsToNextSection <= warningTimeoutSeconds
                     }
                     setTotalSecondsRemaining={setTotalSecondsRemaining}
                     isPaused={isPaused}
@@ -113,16 +113,16 @@ const HomeWithValidData = ({
 
 interface CountdownProps {
     currSecondsRemaining: number;
-    currSlideSecondsRemaining: number;
-    currSlideName: string;
+    currSectionSecondsRemaining: number;
+    currSectionName: string;
     shouldIndicateWarning: boolean;
     setTotalSecondsRemaining: Dispatch<SetStateAction<number>>;
     isPaused: boolean;
 }
 const Countdown = ({
     currSecondsRemaining,
-    currSlideSecondsRemaining,
-    currSlideName,
+    currSectionSecondsRemaining,
+    currSectionName,
     shouldIndicateWarning,
     setTotalSecondsRemaining,
     isPaused,
@@ -147,21 +147,21 @@ const Countdown = ({
             <div
                 className={`p-6 bg-foreground text-background rounded-lg flex flex-col gap-1 justify-center`}
             >
-                <p className="text-sm text-gray-500">Current slide:</p>
-                <p className="text-3xl">{currSlideName}</p>
+                <p className="text-sm text-gray-500">Current section</p>
+                <p className="text-3xl">{currSectionName}</p>
             </div>
             <div className="flex gap-4">
                 <div
-                    className={`${shouldIndicateWarning ? 'motion-safe:animate-pulse bg-orange-400 text-orange-900' : 'bg-green-300 text-green-900'} p-6 rounded-lg flex-[4] flex flex-col gap-1 justify-center transition-colors`}
+                    className={`${shouldIndicateWarning ? 'motion-safe:animate-pulse bg-orange-400 text-orange-900' : 'bg-green-300 text-green-900'} p-6 rounded-lg flex-[4] flex flex-col gap-1 justify-start transition-colors`}
                 >
-                    <span className="text-sm">Time to next slide</span>
+                    <span className="text-sm">Next section in</span>
                     <p className="text-5xl">
-                        {prettyFormatSeconds(currSlideSecondsRemaining)}
+                        {prettyFormatSeconds(currSectionSecondsRemaining)}
                     </p>
                 </div>
-                <div className="p-6 bg-blue-300 text-blue-900 rounded-lg flex-[1] flex flex-col gap-1 justify-center">
-                    <span className="text-sm">Total time remaining</span>
-                    <p className="text-xl">
+                <div className="p-6 bg-blue-300 text-blue-900 rounded-lg flex-[1] flex flex-col gap-1 justify-start">
+                    <span className="text-sm">Time remaining</span>
+                    <p className="text-2xl">
                         {prettyFormatSeconds(currSecondsRemaining)}
                     </p>
                 </div>
