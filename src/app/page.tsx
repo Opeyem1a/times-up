@@ -22,11 +22,13 @@ export default function Home() {
     const { config, warningTimeoutSeconds } = result.data;
 
     return (
-        <main className="max-w-2xl mx-auto min-h-screen my-24 p-4">
-            <HomeWithValidData
-                config={config}
-                warningTimeoutSeconds={warningTimeoutSeconds}
-            />
+        <main className="max-w-2xl mx-auto min-h-screen p-4">
+            <div className="flex flex-col min-h-screen justify-center">
+                <HomeWithValidData
+                    config={config}
+                    warningTimeoutSeconds={warningTimeoutSeconds}
+                />
+            </div>
         </main>
     );
 }
@@ -41,6 +43,7 @@ const HomeWithValidData = ({
     );
     const [totalSecondsRemaining, setTotalSecondsRemaining] =
         useState(totalDuration);
+    const [isPaused, setIsPaused] = useState(true);
 
     const currentSlide = useMemo(() => {
         let potentialDurationAccumulated = 0;
@@ -73,25 +76,34 @@ const HomeWithValidData = ({
         return 0;
     }, [config, totalSecondsRemaining]);
 
-    if (currentSlide === null) {
-        return (
-            <div className="p-6 bg-yellow-200 text-yellow-900 rounded-lg items-center justify-center">
-                <p className="text-lg">All done!</p>
-            </div>
-        );
-    }
-
     return (
-        <Countdown
-            currSecondsRemaining={totalSecondsRemaining}
-            currSlideSecondsRemaining={secondsToNextSlide}
-            currSlideName={currentSlide.name}
-            shouldIndicateWarning={
-                Boolean(warningTimeoutSeconds ?? undefined) &&
-                secondsToNextSlide <= warningTimeoutSeconds
-            }
-            setTotalSecondsRemaining={setTotalSecondsRemaining}
-        />
+        <div className="flex flex-col gap-6">
+            {currentSlide === null ? (
+                <div className="p-6 bg-yellow-200 text-yellow-900 rounded-lg items-center justify-center">
+                    <p className="text-lg">All done!</p>
+                </div>
+            ) : (
+                <Countdown
+                    currSecondsRemaining={totalSecondsRemaining}
+                    currSlideSecondsRemaining={secondsToNextSlide}
+                    currSlideName={currentSlide.name}
+                    shouldIndicateWarning={
+                        Boolean(warningTimeoutSeconds ?? undefined) &&
+                        secondsToNextSlide <= warningTimeoutSeconds
+                    }
+                    setTotalSecondsRemaining={setTotalSecondsRemaining}
+                    isPaused={isPaused}
+                />
+            )}
+            <Controls
+                onStart={() => setIsPaused(false)}
+                onPause={() => setIsPaused(true)}
+                onReset={() => {
+                    setTotalSecondsRemaining(totalDuration);
+                    setIsPaused(true);
+                }}
+            />
+        </div>
     );
 };
 
@@ -101,6 +113,7 @@ interface CountdownProps {
     currSlideName: string;
     shouldIndicateWarning: boolean;
     setTotalSecondsRemaining: Dispatch<SetStateAction<number>>;
+    isPaused: boolean;
 }
 const Countdown = ({
     currSecondsRemaining,
@@ -108,17 +121,22 @@ const Countdown = ({
     currSlideName,
     shouldIndicateWarning,
     setTotalSecondsRemaining,
+    isPaused,
 }: CountdownProps) => {
     useEffect(() => {
-        const interval = setInterval(
-            () => setTotalSecondsRemaining((prev) => prev - 1),
-            1000
-        );
+        let interval;
+
+        if (!isPaused) {
+            interval = setInterval(
+                () => setTotalSecondsRemaining((prev) => prev - 1),
+                1000
+            );
+        }
 
         return () => {
-            clearInterval(interval);
+            if (interval) clearInterval(interval);
         };
-    }, [setTotalSecondsRemaining]);
+    }, [isPaused, setTotalSecondsRemaining]);
 
     return (
         <div className="flex flex-col gap-4">
@@ -144,6 +162,36 @@ const Countdown = ({
                     </p>
                 </div>
             </div>
+        </div>
+    );
+};
+
+interface ControlsProps {
+    onStart: () => void;
+    onPause: () => void;
+    onReset: () => void;
+}
+const Controls = ({ onStart, onPause, onReset }: ControlsProps) => {
+    return (
+        <div className="flex gap-2 p-2 rounded-lg items-center bg-foreground/20 mx-auto">
+            <button
+                className="rounded-md bg-foreground text-background px-3 h-9 text-sm hover:bg-foreground/90 transition-colors"
+                onClick={onStart}
+            >
+                Start
+            </button>
+            <button
+                className="rounded-md bg-foreground text-background px-3 h-9 text-sm hover:bg-foreground/90 transition-colors"
+                onClick={onPause}
+            >
+                Pause
+            </button>
+            <button
+                className="rounded-md bg-foreground text-background px-3 h-9 text-sm hover:bg-foreground/90 transition-colors"
+                onClick={onReset}
+            >
+                Reset
+            </button>
         </div>
     );
 };
