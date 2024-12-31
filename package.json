@@ -6,7 +6,7 @@
         "node": ">=20"
     },
     "scripts": {
-        "dev": "next dev --turbopack",
+        "dev": "next dev",
         "build": "next build",
         "start": "next start",
         "lint": "next lint && yarn prettier . --check",
@@ -19,6 +19,7 @@
     },
     "devDependencies": {
         "@eslint/eslintrc": "^3",
+        "@svgr/webpack": "^8.1.0",
         "@types/node": "^20",
         "@types/react": "^19",
         "@types/react-dom": "^19",

@@ -5,6 +5,9 @@ import {
     ExpectedSearchParams,
     useSlideDataFromSearchParams,
 } from '@/app/hooks/useSlideDataFromSearchParams';
+import PauseIcon from '@/../public/pause.svg';
+import PlayIcon from '@/../public/play.svg';
+import ReplayIcon from '@/../public/replay.svg';
 
 export default function Home() {
     const result = useSlideDataFromSearchParams();
@@ -77,7 +80,7 @@ const HomeWithValidData = ({
     }, [config, totalSecondsRemaining]);
 
     return (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-12">
             {currentSlide === null ? (
                 <div className="p-6 bg-yellow-200 text-yellow-900 rounded-lg items-center justify-center">
                     <p className="text-lg">All done!</p>
@@ -96,6 +99,7 @@ const HomeWithValidData = ({
                 />
             )}
             <Controls
+                isPaused={isPaused}
                 onStart={() => setIsPaused(false)}
                 onPause={() => setIsPaused(true)}
                 onReset={() => {
@@ -167,30 +171,33 @@ const Countdown = ({
 };
 
 interface ControlsProps {
+    isPaused: boolean;
     onStart: () => void;
     onPause: () => void;
     onReset: () => void;
 }
-const Controls = ({ onStart, onPause, onReset }: ControlsProps) => {
+const Controls = ({ isPaused, onStart, onPause, onReset }: ControlsProps) => {
     return (
         <div className="flex gap-2 p-2 rounded-lg items-center bg-foreground/20 mx-auto">
             <button
-                className="rounded-md bg-foreground text-background px-3 h-9 text-sm hover:bg-foreground/90 transition-colors"
+                className="rounded-md bg-foreground text-background px-3 h-9 text-sm hover:bg-foreground/90 data-[is-active=true]:bg-background/70 data-[is-active=true]:text-foreground transition-colors"
                 onClick={onStart}
+                data-is-active={!isPaused}
             >
-                Start
+                <PlayIcon className="w-6 h-6" />
             </button>
             <button
-                className="rounded-md bg-foreground text-background px-3 h-9 text-sm hover:bg-foreground/90 transition-colors"
+                className="rounded-md bg-foreground text-background px-3 h-9 text-sm hover:bg-foreground/90 data-[is-active=true]:bg-background/70 data-[is-active=true]:text-foreground transition-colors"
                 onClick={onPause}
+                data-is-active={isPaused}
             >
-                Pause
+                <PauseIcon className="w-6 h-6" />
             </button>
             <button
                 className="rounded-md bg-foreground text-background px-3 h-9 text-sm hover:bg-foreground/90 transition-colors"
                 onClick={onReset}
             >
-                Reset
+                <ReplayIcon className="w-6 h-6" />
             </button>
         </div>
     );
