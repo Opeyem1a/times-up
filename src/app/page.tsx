@@ -14,9 +14,11 @@ export default function Home() {
     const result = useSectionDataFromSearchParams();
     const searchParams = useSearchParams();
 
+    const parsedParams = decodeURIComponent(searchParams.toString());
+
     return (
-        <main className="max-w-2xl mx-auto min-h-screen p-4">
-            <div className="flex flex-col min-h-screen justify-center">
+        <main className="max-w-2xl mx-auto min-h-screen px-4">
+            <div className="flex flex-col min-h-screen py-4 justify-center">
                 {result.success ? (
                     <HomeWithValidData
                         config={result.data.config}
@@ -25,7 +27,7 @@ export default function Home() {
                         }
                     />
                 ) : (
-                    <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-4 pt-12">
                         <h4 className="text-lg font-semibold">
                             😬 Uh-oh, we can't interpret this format properly
                         </h4>
@@ -34,12 +36,14 @@ export default function Home() {
                                 <span key={`error-${index}`}>{error}</span>
                             ))}
                         </div>
-                        <code className="px-2 py-1 bg-foreground/20 text-foreground text-sm rounded-md break-words inline md:inline-table">
-                            {decodeURIComponent(searchParams.toString())}
-                        </code>
+                        {parsedParams && (
+                            <code className="px-2 py-1 bg-foreground/20 text-foreground text-sm rounded-md break-words inline">
+                                {parsedParams}
+                            </code>
+                        )}
                     </div>
                 )}
-                <div className="min-h-[1rem]" />
+                <div className="min-h-[4rem]" />
             </div>
         </main>
     );
@@ -91,7 +95,7 @@ const HomeWithValidData = ({
     return (
         <div className="flex flex-col gap-12">
             {currentSection === null ? (
-                <div className="p-6 bg-yellow-200 text-yellow-900 rounded-lg items-center justify-center">
+                <div className="flex mx-auto px-6 py-4 bg-yellow-200 text-yellow-900 rounded-lg items-center justify-center">
                     <p className="text-lg">All done!</p>
                 </div>
             ) : (
@@ -189,25 +193,31 @@ const Controls = ({ isPaused, onStart, onPause, onReset }: ControlsProps) => {
     return (
         <div className="flex gap-2 p-2 rounded-lg items-center bg-foreground/20 mx-auto">
             <button
-                className="rounded-md bg-foreground text-background px-3 h-9 text-sm hover:bg-foreground/90 data-[is-active=true]:bg-background/70 data-[is-active=true]:text-foreground transition-colors"
+                className="rounded-md bg-[#fcfcfc] text-[#141414] px-3 h-9 text-sm hover:bg-[#fcfcfc]/90 data-[is-active=true]:bg-[#141414]/70 data-[is-active=true]:text-[#fcfcfc] transition-colors"
                 onClick={onStart}
                 data-is-active={!isPaused}
             >
                 <PlayIcon className="w-6 h-6" />
             </button>
             <button
-                className="rounded-md bg-foreground text-background px-3 h-9 text-sm hover:bg-foreground/90 data-[is-active=true]:bg-background/70 data-[is-active=true]:text-foreground transition-colors"
+                className="rounded-md bg-[#fcfcfc] text-[#141414] px-3 h-9 text-sm hover:bg-[#fcfcfc]/90 data-[is-active=true]:bg-[#141414]/70 data-[is-active=true]:text-[#fcfcfc] transition-colors"
                 onClick={onPause}
                 data-is-active={isPaused}
             >
                 <PauseIcon className="w-6 h-6" />
             </button>
             <button
-                className="rounded-md bg-foreground text-background px-3 h-9 text-sm hover:bg-foreground/90 transition-colors"
+                className="rounded-md bg-[#fcfcfc] text-[#141414] px-3 h-9 text-sm hover:bg-[#fcfcfc]/90 transition-colors"
                 onClick={onReset}
             >
                 <ReplayIcon className="w-6 h-6" />
             </button>
+            <a
+                className="rounded-md bg-[#fcfcfc] text-[#141414] px-3 h-9 flex items-center text-sm hover:bg-[#fcfcfc]/90 transition-colors"
+                href={'/build'}
+            >
+                Settings
+            </a>
         </div>
     );
 };
