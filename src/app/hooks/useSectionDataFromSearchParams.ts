@@ -1,6 +1,5 @@
 import { useSearchParams } from 'next/navigation';
-
-const SECONDS_IN_HOUR = 60 * 60;
+import { CONFIG_DELIMITER, SECONDS_IN_HOUR } from '@/app/util';
 
 export const useSectionDataFromSearchParams = (): SafeParseResult<
     ExpectedSearchParams,
@@ -23,15 +22,6 @@ export type ExpectedSearchParams = {
     }[];
     warningTimeoutSeconds: number | null;
 };
-
-/**
- * This is the delimiter separating each segment of the config, as
- * provided by a search parameter string.
- * The pattern is <name><delimiter><duration><delimiter> repeated.
- *
- * If the delimiter is ";", then a valid config string could be "name1;100;name2;200"
- */
-const CONFIG_DELIMITER = ';';
 
 type SafeParseResult<T, E> =
     | { success: true; data: T }
@@ -91,6 +81,9 @@ const safeParseParams = ({
         if (config.durationInSeconds > SECONDS_IN_HOUR) {
             errors.push('Section durations cannot exceed 1 hour of time');
         }
+        if (config.durationInSeconds <= 0) {
+            errors.push('Section durations cannot be negative.');
+        }
 
         return [...acc, ...errors];
     }, [] as string[]);
@@ -117,6 +110,13 @@ const safeParseParams = ({
         return {
             success: false,
             error: ['Warning threshold must be a valid number of seconds'],
+        };
+    }
+
+    if (parsedWarningTimeout <= 0) {
+        return {
+            success: false,
+            error: ['Warning threshold cannot be negative.'],
         };
     }
 
