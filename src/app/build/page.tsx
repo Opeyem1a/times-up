@@ -10,6 +10,7 @@ import React, {
 import { v4 as uuidV4 } from 'uuid';
 import CloseIcon from '@/../public/close.svg';
 import { CONFIG_DELIMITER, SECONDS_IN_HOUR } from '@/app/util';
+import dynamic from 'next/dynamic';
 
 const BuildPage = () => {
     const [state, dispatch] = useReducer(reducer, {
@@ -228,7 +229,10 @@ const BuildPage = () => {
     );
 };
 
-export default BuildPage;
+// fixme: this was annoying, see https://nextjs.org/docs/messages/prerender-error
+export default dynamic(() => Promise.resolve(BuildPage), {
+    ssr: false,
+});
 
 type Action =
     | {
