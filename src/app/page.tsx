@@ -105,7 +105,7 @@ const HomeWithValidData = ({
                     currSectionSecondsRemaining={secondsToNextSection}
                     currSectionName={currentSection.name}
                     shouldIndicateWarning={
-                        Boolean(warningTimeoutSeconds ?? undefined) &&
+                        !!warningTimeoutSeconds &&
                         secondsToNextSection <= warningTimeoutSeconds
                     }
                     setTotalSecondsRemaining={setTotalSecondsRemaining}
@@ -142,7 +142,7 @@ const Countdown = ({
     isPaused,
 }: CountdownProps) => {
     useEffect(() => {
-        let interval;
+        let interval: NodeJS.Timeout;
 
         if (!isPaused) {
             interval = setInterval(

@@ -358,7 +358,7 @@ const errorsForSection = (
 const errorsForTimeout = (
     _warningTimeoutValue: FormState['warningTimeout']['value']
 ): string[] => {
-    const errors = [];
+    const errors: string[] = [];
     if (!_warningTimeoutValue) {
         return errors;
     }

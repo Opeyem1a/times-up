@@ -52,28 +52,33 @@ const safeParseParams = ({
         };
     }
 
-    const parsedConfigs = split
-        .reduce(
+    const parsedConfigs = (
+        split.reduce(
             /**
              * this takes an array like [A, B, C, D] and converts it to [[A, B], [C, D]]
              */
-            (acc, curr) => {
+            // @ts-expect-error - typescript is supremely confused about this line
+            (acc: [string, string][], curr: string) => {
                 const last = acc.at(-1);
+                if (!last) return [...acc, [curr]];
                 if (acc.length === 0 || last.length === 2)
                     return [...acc, [curr]];
                 if (last.length === 1)
                     return [...acc.slice(0, -1), [...last, curr]];
             },
             [] as [string, string][]
-        )
-        .map(([name, durationInSeconds]) => {
-            return {
-                name: String(name),
-                durationInSeconds: Number(durationInSeconds),
-            };
-        });
+            // @unsafe - typescript was being silly
+        ) as unknown as [string, string][]
+    ).map(([name, durationInSeconds]) => {
+        return {
+            name: String(name),
+            durationInSeconds: Number(durationInSeconds),
+        };
+    });
 
-    const errorsFromConfigs = parsedConfigs.reduce((acc, config) => {
+    const errorsFromConfigs = (
+        parsedConfigs as { durationInSeconds: number; name: string }[]
+    ).reduce((acc, config) => {
         const errors = [];
         if (isNaN(config.durationInSeconds)) {
             errors.push('Section durations must be a valid number of seconds');
