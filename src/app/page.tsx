@@ -1,6 +1,13 @@
 'use client';
 
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
+import {
+    Dispatch,
+    SetStateAction,
+    Suspense,
+    useEffect,
+    useMemo,
+    useState,
+} from 'react';
 import {
     ExpectedSearchParams,
     useSectionDataFromSearchParams,
@@ -11,6 +18,15 @@ import ReplayIcon from '@/../public/replay.svg';
 import { useSearchParams } from 'next/navigation';
 
 export default function Home() {
+    // fixme: this was annoying, see https://nextjs.org/docs/messages/missing-suspense-with-csr-bailout
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <HomeInSuspense />
+        </Suspense>
+    );
+}
+
+const HomeInSuspense = () => {
     const result = useSectionDataFromSearchParams();
     const searchParams = useSearchParams();
 
@@ -29,7 +45,8 @@ export default function Home() {
                 ) : (
                     <div className="flex flex-col gap-4 pt-12">
                         <h4 className="text-lg font-semibold">
-                            😬 Uh-oh, we can't interpret this format properly
+                            😬 Uh-oh, we can&apos;t interpret this format
+                            properly
                         </h4>
                         <div className="flex flex-col gap-2 text-orange-700 dark:text-orange-400">
                             {result.error.map((error, index) => (
@@ -47,7 +64,7 @@ export default function Home() {
             </div>
         </main>
     );
-}
+};
 
 const HomeWithValidData = ({
     config,
@@ -104,7 +121,7 @@ const HomeWithValidData = ({
                     currSectionSecondsRemaining={secondsToNextSection}
                     currSectionName={currentSection.name}
                     shouldIndicateWarning={
-                        Boolean(warningTimeoutSeconds ?? undefined) &&
+                        !!warningTimeoutSeconds &&
                         secondsToNextSection <= warningTimeoutSeconds
                     }
                     setTotalSecondsRemaining={setTotalSecondsRemaining}
@@ -141,7 +158,7 @@ const Countdown = ({
     isPaused,
 }: CountdownProps) => {
     useEffect(() => {
-        let interval;
+        let interval: NodeJS.Timeout;
 
         if (!isPaused) {
             interval = setInterval(

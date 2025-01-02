@@ -10,6 +10,7 @@ import React, {
 import { v4 as uuidV4 } from 'uuid';
 import CloseIcon from '@/../public/close.svg';
 import { CONFIG_DELIMITER, SECONDS_IN_HOUR } from '@/app/util';
+import dynamic from 'next/dynamic';
 
 const BuildPage = () => {
     const [state, dispatch] = useReducer(reducer, {
@@ -40,13 +41,13 @@ const BuildPage = () => {
                     <h4 className="font-semibold text-2xl">Configuration</h4>
                     <p className="text-sm">
                         This is a handy tool to help you generate the link
-                        you'll need to use our tool. Heads up, the warning
+                        you&apos;ll need to use our tool. Heads up, the warning
                         threshold determines how close to the end of a section
                         you wish to be warned.
                     </p>
                     <p className="text-sm">
-                        Once you're done, copy the link and open it up when you
-                        need to present! The link will work forever 💖.
+                        Once you&apos;re done, copy the link and open it up when
+                        you need to present! The link will work forever 💖.
                     </p>
                 </div>
                 <div className="flex flex-col gap-6 justify-center">
@@ -83,7 +84,7 @@ const BuildPage = () => {
                     </div>
                     <div className="min-h-[1px] bg-foreground" />
                     <div className="flex flex-col gap-4">
-                        {state.config.map((section, index) => {
+                        {state.config.map((section) => {
                             return (
                                 <div
                                     key={section.value.uuid}
@@ -228,7 +229,10 @@ const BuildPage = () => {
     );
 };
 
-export default BuildPage;
+// fixme: this was annoying, see https://nextjs.org/docs/messages/prerender-error
+export default dynamic(() => Promise.resolve(BuildPage), {
+    ssr: false,
+});
 
 type Action =
     | {
@@ -358,7 +362,7 @@ const errorsForSection = (
 const errorsForTimeout = (
     _warningTimeoutValue: FormState['warningTimeout']['value']
 ): string[] => {
-    const errors = [];
+    const errors: string[] = [];
     if (!_warningTimeoutValue) {
         return errors;
     }
