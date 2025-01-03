@@ -344,7 +344,7 @@ const formStateToUrl = (state: FormState): string => {
         }, ''),
         warning: state.warningTimeout.value,
     });
-    return `${window.origin}?${decodeURIComponent(searchParams.toString())}`;
+    return `${window.origin}/timer?${decodeURIComponent(searchParams.toString())}`;
 };
 
 const errorsForSection = (
