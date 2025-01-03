@@ -23,7 +23,7 @@ const BuildPage = () => {
     }, [state]);
 
     useEffect(() => {
-        dispatch({ type: 'add_section' });
+        dispatch({ type: 'init_config' });
     }, []);
 
     const [message, setMessage] = useState('');
@@ -236,6 +236,9 @@ export default dynamic(() => Promise.resolve(BuildPage), {
 
 type Action =
     | {
+          type: 'init_config';
+      }
+    | {
           type: 'add_section';
       }
     | {
@@ -252,6 +255,19 @@ type Action =
           value: string;
       };
 function reducer(state: FormState, action: Action): FormState {
+    if (action.type === 'init_config') {
+        if (state.config.length > 0) {
+            return state;
+        }
+        return {
+            ...state,
+            config: [
+                ...state.config,
+                { value: formConfigFactory(), errors: [] },
+            ],
+        };
+    }
+
     if (action.type === 'remove_section') {
         return {
             ...state,
@@ -328,7 +344,7 @@ const formStateToUrl = (state: FormState): string => {
         }, ''),
         warning: state.warningTimeout.value,
     });
-    return `${window.origin}?${searchParams.toString()}`;
+    return `${window.origin}?${decodeURIComponent(searchParams.toString())}`;
 };
 
 const errorsForSection = (

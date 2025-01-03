@@ -109,10 +109,24 @@ const HomeWithValidData = ({
         return 0;
     }, [config, totalSecondsRemaining]);
 
+    const secondsRemainingIncludingEntireCurrentSection = useMemo(() => {
+        if (!currentSection) return totalDuration;
+        return (
+            totalSecondsRemaining -
+            secondsToNextSection +
+            currentSection.durationInSeconds
+        );
+    }, [
+        totalDuration,
+        totalSecondsRemaining,
+        secondsToNextSection,
+        currentSection?.durationInSeconds,
+    ]);
+
     return (
         <div className="flex flex-col gap-12">
             {currentSection === null ? (
-                <div className="flex mx-auto px-6 py-4 bg-yellow-200 text-yellow-900 rounded-lg items-center justify-center">
+                <div className="flex mx-auto px-6 py-4 bg-foreground/10 text-foreground rounded-lg items-center justify-center">
                     <p className="text-lg">All done!</p>
                 </div>
             ) : (
@@ -125,6 +139,11 @@ const HomeWithValidData = ({
                         secondsToNextSection <= warningTimeoutSeconds
                     }
                     setTotalSecondsRemaining={setTotalSecondsRemaining}
+                    restartSection={() => {
+                        setTotalSecondsRemaining(
+                            secondsRemainingIncludingEntireCurrentSection
+                        );
+                    }}
                     isPaused={isPaused}
                 />
             )}
@@ -147,6 +166,7 @@ interface CountdownProps {
     currSectionName: string;
     shouldIndicateWarning: boolean;
     setTotalSecondsRemaining: Dispatch<SetStateAction<number>>;
+    restartSection: () => void;
     isPaused: boolean;
 }
 const Countdown = ({
@@ -155,6 +175,7 @@ const Countdown = ({
     currSectionName,
     shouldIndicateWarning,
     setTotalSecondsRemaining,
+    restartSection,
     isPaused,
 }: CountdownProps) => {
     useEffect(() => {
@@ -173,25 +194,33 @@ const Countdown = ({
     }, [isPaused, setTotalSecondsRemaining]);
 
     return (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2 sm:gap-4">
             <div
                 className={`p-6 bg-foreground text-background rounded-lg flex flex-col gap-1 justify-center`}
             >
                 <p className="text-sm text-gray-500">Current section</p>
                 <p className="text-3xl">{currSectionName}</p>
             </div>
-            <div className="flex gap-4">
+            <div className="flex gap-2 sm:gap-4 flex-col sm:flex-row">
                 <div
-                    className={`${shouldIndicateWarning ? 'motion-safe:animate-pulse bg-orange-400 text-orange-900' : 'bg-green-300 text-green-900'} p-6 rounded-lg flex-[4] flex flex-col gap-1 justify-start transition-colors`}
+                    className={`${shouldIndicateWarning ? 'motion-safe:animate-pulse bg-orange-400 text-orange-900' : 'bg-green-300 text-green-900'} p-6 rounded-lg flex-[4] flex justify-between gap-2 transition-colors`}
                 >
-                    <span className="text-sm">Next section in</span>
-                    <p className="text-5xl">
-                        {prettyFormatSeconds(currSectionSecondsRemaining)}
-                    </p>
+                    <div className="flex flex-col gap-1 justify-start">
+                        <span className="text-sm">Next section in</span>
+                        <p className="text-5xl">
+                            {prettyFormatSeconds(currSectionSecondsRemaining)}
+                        </p>
+                    </div>
+                    <button
+                        className="rounded-md mb-auto bg-white/40 text-black/70 p-2 text-sm hover:bg-white/70 transition-colors"
+                        onClick={() => restartSection()}
+                    >
+                        <ReplayIcon className="w-6 h-6" />
+                    </button>
                 </div>
-                <div className="p-6 bg-blue-300 text-blue-900 rounded-lg flex-[1] flex flex-col gap-1 justify-start">
-                    <span className="text-sm">Time remaining</span>
-                    <p className="text-4xl">
+                <div className="px-6 py-4 sm:py-6 bg-blue-300 text-blue-900 rounded-lg flex-[1] flex flex-col sm:gap-1 justify-end">
+                    <span className="text-sm ">Time remaining</span>
+                    <p className="text-2xl sm:text-4xl">
                         {prettyFormatSeconds(currSecondsRemaining)}
                     </p>
                 </div>
