@@ -53,7 +53,7 @@ const BuildPage = () => {
                 <div className="flex flex-col gap-6 justify-center">
                     <div className="flex flex-col gap-1">
                         <label className="text-xs font-semibold text-foreground/80">
-                            Warning threshold
+                            Warning threshold (s)
                         </label>
                         <Input
                             type="text"
