@@ -11,6 +11,7 @@ import { v4 as uuidV4 } from 'uuid';
 import CloseIcon from '@/../public/close.svg';
 import { CONFIG_DELIMITER, SECONDS_IN_HOUR } from '@/app/util';
 import dynamic from 'next/dynamic';
+import { Button } from '@/app/(components)/button';
 
 const BuildPage = () => {
     const [state, dispatch] = useReducer(reducer, {
@@ -175,23 +176,15 @@ const BuildPage = () => {
                             );
                         })}
                     </div>
-                    <button
-                        className={`
-                            h-9 rounded-md px-3 text-sm transition-colors bg-foreground text-background 
-                            hover:bg-foreground/90
-                            disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-foreground/50
-                        `}
+                    <Button
+                        variant="primary"
                         onClick={() => dispatch({ type: 'add_section' })}
                     >
                         Add section
-                    </button>
+                    </Button>
                     <div className="flex flex-col gap-2">
-                        <button
-                            className={`
-                                h-9 rounded-md px-3 text-sm transition-colors bg-green-300 text-green-900
-                                hover:bg-green-300/90
-                                disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-green-300/50
-                            `}
+                        <Button
+                            variant="success"
                             onClick={() => {
                                 if (formHasErrors) {
                                     setMessage('Please fix the errors first');
@@ -206,7 +199,7 @@ const BuildPage = () => {
                             disabled={formHasErrors}
                         >
                             Copy link
-                        </button>
+                        </Button>
                         <code
                             className={`
                                 px-2 py-1 text-foreground text-xs rounded-sm break-words inline

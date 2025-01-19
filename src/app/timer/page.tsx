@@ -16,6 +16,7 @@ import PauseIcon from '@/../public/pause.svg';
 import PlayIcon from '@/../public/play.svg';
 import ReplayIcon from '@/../public/replay.svg';
 import { useSearchParams } from 'next/navigation';
+import { Button } from '@/app/(components)/button';
 
 export default function PlayPage() {
     // fixme: this was annoying, see https://nextjs.org/docs/messages/missing-suspense-with-csr-bailout
@@ -238,28 +239,17 @@ interface ControlsProps {
 const Controls = ({ isPaused, onStart, onPause, onReset }: ControlsProps) => {
     return (
         <div className="flex gap-2 p-2 rounded-lg items-center bg-foreground/20 mx-auto">
-            <button
-                className="rounded-md bg-[#fcfcfc] text-[#141414] px-3 h-9 text-sm hover:bg-[#fcfcfc]/90 data-[is-active=true]:bg-[#141414]/70 data-[is-active=true]:text-[#fcfcfc] transition-colors"
-                onClick={onStart}
-                data-is-active={!isPaused}
-            >
+            <Button variant={isPaused ? 'primary' : 'active'} onClick={onStart}>
                 <PlayIcon className="w-6 h-6" />
-            </button>
-            <button
-                className="rounded-md bg-[#fcfcfc] text-[#141414] px-3 h-9 text-sm hover:bg-[#fcfcfc]/90 data-[is-active=true]:bg-[#141414]/70 data-[is-active=true]:text-[#fcfcfc] transition-colors"
-                onClick={onPause}
-                data-is-active={isPaused}
-            >
+            </Button>
+            <Button variant={isPaused ? 'active' : 'primary'} onClick={onPause}>
                 <PauseIcon className="w-6 h-6" />
-            </button>
-            <button
-                className="rounded-md bg-[#fcfcfc] text-[#141414] px-3 h-9 text-sm hover:bg-[#fcfcfc]/90 transition-colors"
-                onClick={onReset}
-            >
+            </Button>
+            <Button variant="primary" onClick={onReset}>
                 <ReplayIcon className="w-6 h-6" />
-            </button>
+            </Button>
             <a
-                className="rounded-md bg-[#fcfcfc] text-[#141414] px-3 h-9 flex items-center text-sm hover:bg-[#fcfcfc]/90 transition-colors"
+                className="rounded-md bg-foreground text-background px-3 h-9 flex items-center text-sm hover:bg-foreground/90 transition-colors"
                 href={'/build'}
             >
                 New timer
