@@ -18,6 +18,7 @@ import ReplayIcon from '@/../public/replay.svg';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/app/(components)/button';
 import { prettyFormatSeconds } from '@/app/util';
+import NoSleep from 'nosleep.js';
 
 export default function PlayPage() {
     // fixme: this was annoying, see https://nextjs.org/docs/messages/missing-suspense-with-csr-bailout
@@ -125,6 +126,19 @@ const HomeWithValidData = ({
         currentSection,
     ]);
 
+    const noSleep = useMemo(() => {
+        return new NoSleep();
+    }, []);
+
+    useEffect(
+        function disableNoSleepWhenPresentationEnds() {
+            if (currentSection !== null) return;
+            if (!noSleep.isEnabled) return;
+            noSleep.disable();
+        },
+        [noSleep, currentSection]
+    );
+
     return (
         <div className="flex flex-col gap-12">
             {currentSection === null ? (
@@ -151,11 +165,15 @@ const HomeWithValidData = ({
             )}
             <Controls
                 isPaused={isPaused}
-                onStart={() => setIsPaused(false)}
+                onStart={() => {
+                    setIsPaused(false);
+                    noSleep.enable();
+                }}
                 onPause={() => setIsPaused(true)}
                 onReset={() => {
                     setTotalSecondsRemaining(totalDuration);
                     setIsPaused(true);
+                    noSleep.disable();
                 }}
             />
         </div>
