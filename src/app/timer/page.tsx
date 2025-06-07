@@ -17,6 +17,7 @@ import PlayIcon from '@/../public/play.svg';
 import ReplayIcon from '@/../public/replay.svg';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/app/(components)/button';
+import { prettyFormatSeconds } from '@/app/util';
 
 export default function PlayPage() {
     // fixme: this was annoying, see https://nextjs.org/docs/messages/missing-suspense-with-csr-bailout
@@ -256,16 +257,4 @@ const Controls = ({ isPaused, onStart, onPause, onReset }: ControlsProps) => {
             </a>
         </div>
     );
-};
-
-/**
- * Formats time in an MM:SS format
- * If the number of seconds is beyond an hour, formats in HH:MM:SS instead
- */
-const prettyFormatSeconds = (seconds: number): string => {
-    if (seconds > 60 * 60) {
-        // include hour timer
-        return new Date(seconds * 1000).toISOString().substring(11, 19);
-    }
-    return new Date(seconds * 1000).toISOString().substring(14, 19);
 };

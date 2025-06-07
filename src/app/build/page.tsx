@@ -9,7 +9,11 @@ import React, {
 } from 'react';
 import { v4 as uuidV4 } from 'uuid';
 import CloseIcon from '@/../public/close.svg';
-import { CONFIG_DELIMITER, SECONDS_IN_HOUR } from '@/app/util';
+import {
+    CONFIG_DELIMITER,
+    prettyFormatSeconds,
+    SECONDS_IN_HOUR,
+} from '@/app/util';
 import dynamic from 'next/dynamic';
 import { Button } from '@/app/(components)/button';
 
@@ -34,6 +38,10 @@ const BuildPage = () => {
             setTimeout(() => setMessage(''), 2500);
         }
     }, [message]);
+
+    const totalDurationSeconds = state.config.reduce((acc, curr) => {
+        return acc + Number(curr.value.durationInSeconds);
+    }, 0);
 
     return (
         <main className="max-w-2xl mx-auto px-4">
@@ -206,6 +214,12 @@ const BuildPage = () => {
                                 ${formHasErrors ? 'bg-red-600/30' : 'bg-green-300/20'}
                             `}
                         >
+                            <span className="italic">
+                                Presentation duration is{' '}
+                                {prettyFormatSeconds(totalDurationSeconds)} and
+                                contains {state.config.length} section(s)
+                            </span>
+                            <br />
                             {formStateToUrl(state)}
                         </code>
                     </div>
