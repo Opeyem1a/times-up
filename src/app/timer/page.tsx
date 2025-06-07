@@ -130,6 +130,15 @@ const HomeWithValidData = ({
         return new NoSleep();
     }, []);
 
+    useEffect(
+        function disableNoSleepWhenPresentationEnds() {
+            if (currentSection !== null) return;
+            if (!noSleep.isEnabled) return;
+            noSleep.disable();
+        },
+        [noSleep, currentSection]
+    );
+
     return (
         <div className="flex flex-col gap-12">
             {currentSection === null ? (
