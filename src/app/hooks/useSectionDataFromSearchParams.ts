@@ -71,7 +71,7 @@ const safeParseParams = ({
         ) as unknown as [string, string][]
     ).map(([name, durationInSeconds]) => {
         return {
-            name: String(name),
+            name: String(decodeURIComponent(name)),
             durationInSeconds: Number(durationInSeconds),
         };
     });
