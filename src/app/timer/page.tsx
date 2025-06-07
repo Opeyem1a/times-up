@@ -128,7 +128,7 @@ const HomeWithValidData = ({
 
     const noSleep = useMemo(() => {
         return new NoSleep();
-    }, [])
+    }, []);
 
     return (
         <div className="flex flex-col gap-12">
@@ -157,7 +157,7 @@ const HomeWithValidData = ({
             <Controls
                 isPaused={isPaused}
                 onStart={() => {
-                    setIsPaused(false)
+                    setIsPaused(false);
                     noSleep.enable();
                 }}
                 onPause={() => setIsPaused(true)}
