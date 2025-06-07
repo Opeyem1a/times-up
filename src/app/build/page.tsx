@@ -333,11 +333,11 @@ const formStateHasErrors = (state: FormState): boolean => {
 const formStateToUrl = (state: FormState): string => {
     const searchParams = new URLSearchParams({
         config: state.config.reduce((acc, curr) => {
-            return `${acc}${curr.value.name}${CONFIG_DELIMITER}${curr.value.durationInSeconds}${CONFIG_DELIMITER}`;
+            return `${acc}${encodeURIComponent(curr.value.name)}${CONFIG_DELIMITER}${curr.value.durationInSeconds}${CONFIG_DELIMITER}`;
         }, ''),
         warning: state.warningTimeout.value,
     });
-    return `${window.origin}/timer?${decodeURIComponent(searchParams.toString())}`;
+    return `${window.origin}/timer?${searchParams.toString()}`;
 };
 
 const errorsForSection = (
